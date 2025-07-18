@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story - Anniversary Collage</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for love attraction and animations */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #ffdde1, #ee9ca7); /* Soft pink gradient */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; /* Provides padding on all sides, good for small screens */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            position: relative; /* For positioning background hearts */
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 30px; /* Ample padding inside the container */
+            max-width: 90%; /* Ensures it doesn't take full width on very wide screens */
+            width: 100%; /* Makes it fill available width on smaller screens */
+            text-align: center;
+            position: relative;
+            z-index: 10; /* Ensure content is above hearts */
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            color: #d6336c; /* Deep pink */
+            font-size: 2.5rem; /* Scales well with screen size */
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .subheader {
+            color: #884a56; /* Muted pink */
+            font-size: 1.2rem; /* Scales well with screen size */
+            margin-bottom: 30px;
+        }
+
+        /* Unified Button Styles for Music and Play/Pause */
+        .app-button, .file-input-wrapper {
+            display: inline-flex; /* Use flex for icon and text */
+            align-items: center;
+            gap: 8px; /* Space between icon and text */
+            background-color: #ff6b81; /* Bright pink */
+            color: white;
+            padding: 12px 25px; /* Consistent size for both buttons */
+            border-radius: 15px; /* Consistent rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 129, 0.4);
+            font-weight: 600;
+            user-select: none; /* Prevent text selection */
+            border: none; /* Ensure no default button border */
+        }
+
+        .app-button:hover, .file-input-wrapper:hover {
+            background-color: #e64a66; /* Consistent darker pink on hover */
+            transform: translateY(-2px) scale(1.02); /* Consistent lift and scale animation */
+            box-shadow: 0 8px 20px rgba(255, 107, 129, 0.6);
+        }
+
+        .file-input-wrapper {
+            margin-bottom: 20px; /* Adjusted margin for file input */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Music Player Specific Styles */
+        .music-player {
+            background-color: #ffebee; /* Lighter pink */
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column; /* Stacks elements vertically on small screens */
+            align-items: center;
+            gap: 15px;
+        }
+
+        .music-player button.playing {
+            animation: pulse 1.5s infinite ease-in-out; /* Pulsating animation when playing */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 5px 15px rgba(255, 107, 129, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 8px 20px rgba(255, 107, 129, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 5px 15px rgba(255, 107, 129, 0.4); }
+        }
+
+        .music-player p {
+            color: #022854fe;
+            font-weight: 500;
+        }
+
+        /* SVG icon styling */
+        .icon {
+            width: 20px; /* Adjust size as needed */
+            height: 20px;
+            fill: currentColor; /* Inherit color from parent */
+        }
+
+        /* Year Section Styles */
+        .year-section {
+            background-color: #fce4ec; /* Very light pink background */
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .year-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ffcdd2; /* Light pink border */
+            margin-bottom: 15px;
+        }
+
+        .year-header h2 {
+            color: #d6336c;
+            font-size: 1.8rem; /* Scales well with screen size */
+            font-weight: 700;
+        }
+
+        .year-header .toggle-icon {
+            font-size: 1.5rem;
+            color: #d6336c;
+            transition: transform 0.3s ease;
+        }
+
+        .year-section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .year-content {
+            max-height: 1000px; /* Arbitrary large value for smooth transition */
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+
+        .year-section.collapsed .year-content {
+            max-height: 0;
+        }
+
+        /* Collage specific styles */
+        .collage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* All items occupy 1fr */
+            grid-auto-flow: dense; /* Fills in empty spaces for zig-zag */
+            gap: 15px;
+            padding: 10px;
+            border-radius: 15px;
+            min-height: 100px; /* Ensure some height even if no photos */
+            align-items: start;
+            justify-content: center;
+            position: relative; /* Crucial for SVG positioning */
+        }
+
+        .collage-item {
+            position: relative;
+            background-color: #fff;
+            border-radius: 15px; /* Default for square */
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack image and text vertically */
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* Start hidden for animation */
+            transform: scale(0.8); /* Start smaller for animation */
+            animation: fadeInScale 0.5s ease-out forwards; /* Apply animation */
+            will-change: transform, opacity; /* Optimize for animation */
+            z-index: 6; /* Ensure photos are below SVG lines */
+            aspect-ratio: 1 / 1; /* All items are square containers */
+        }
+
+        .collage-item:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 20; /* Bring to front on hover */
+        }
+
+        /* Visual cue for linking mode */
+        .collage-item.linking-target {
+            cursor: crosshair;
+            box-shadow: 0 0 0 3px #667eea; /* Blue highlight */
+        }
+        .collage-item.linking-selected {
+            box-shadow: 0 0 0 4px #4299e1; /* Darker blue for selected */
+            transform: scale(1.03);
+        }
+        body.linking-cursor {
+            cursor: crosshair;
+        }
+
+
+        /* Image styling within the item - applies clipping for shapes */
+        .collage-item img {
+            width: 100%;
+            height: 70%; /* Image takes 70% of the height */
+            object-fit: cover; /* Cover the area */
+            border-radius: 15px 15px 0 0; /* Default for square */
+            transition: clip-path 0.3s ease-out, border-radius 0.3s ease-out; /* Smooth shape transitions */
+        }
+
+        .collage-item[data-shape="circle"] img {
+            border-radius: 50%; /* Makes image circular */
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        .collage-item[data-shape="pentagon"] img {
+            border-radius: 0; /* Remove default border-radius */
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        }
+
+        .collage-item[data-shape="hexagon"] img {
+            border-radius: 0; /* Remove default border-radius */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+
+        .photo-memory {
+            width: 100%;
+            height: 30%; /* Memory text takes 30% of the height */
+            background-color: rgba(255, 243, 244, 0.9); /* Light pink, slightly transparent */
+            color: #884a56;
+            padding: 8px;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            text-align: center;
+            overflow: hidden; /* Hide overflow text */
+            text-overflow: ellipsis; /* Add ellipsis for overflow */
+            border-radius: 0 0 15px 15px; /* Rounded bottom corners */
+            box-sizing: border-box; /* Include padding in height */
+            display: flex; /* For centering text vertically */
+            align-items: center;
+            justify-content: center;
+            cursor: text; /* Indicate editable */
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+        }
+
+        .photo-memory:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #ff6b81; /* Highlight on focus */
+        }
+
+        .photo-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 5px 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-top: 1px solid #ffcdd2;
+            border-radius: 0 0 15px 15px;
+            transform: translateY(100%); /* Start hidden */
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 7; /* Above memory text but below image */
+        }
+
+        .collage-item:hover .photo-actions {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .photo-actions button {
+            background: none;
+            border: none;
+            color: #d6336c;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .photo-actions button:hover {
+            color: #e64a66;
+            transform: translateY(-2px);
+        }
+
+        .photo-actions button .icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Animation for photo entry */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Background Heart Animation Styles */
+        .hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1; /* Below the main content */
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        .heart {
+            position: absolute;
+            background-color: #ff6b81; /* Bright pink heart */
+            transform: rotate(-45deg);
+            animation: floatHeart linear infinite;
+            opacity: 0;
+            /* Heart shape using pseudo-elements */
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #ff6b81;
+            border-radius: 50%;
+        }
+
+        .heart:before {
+            top: -50%;
+            left: 0;
+        }
+
+        .heart:after {
+            top: 0;
+            left: 50%;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) rotate(-45deg) scale(0.5); /* Start at its set top/left, slightly scaled */
+                opacity: 0;
+            }
+            20% {
+                opacity: 1; /* Fully visible quickly */
+                transform: translateY(-20px) rotate(-45deg) scale(0.8); /* Slight initial upward movement */
+            }
+            100% {
+                transform: translateY(-200px) rotate(-45deg) scale(1.2); /* Float further up, grow, fade out */
+                opacity: 0;
+            }
+        }
+
+        /* Anniversary Quote Styles */
+        .anniversary-quote {
+            background-color: #fff3f4; /* Very light pink */
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-style: italic;
+            color: #d6336c;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .anniversary-quote strong {
+            color: #884a56;
+            font-weight: 700;
+        }
+
+        /* Add Year Button */
+        .add-year-btn {
+            background-color: #a74a56; /* Muted pink */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px rgba(167, 74, 86, 0.4);
+            font-weight: 600;
+            margin-top: 20px;
+            user-select: none;
+        }
+
+        .add-year-btn:hover {
+            background-color: #8f3e49;
+            transform: translateY(-2px);
+        }
+
+        /* SVG for connections */
+        .collage-connections-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Crucial: allows clicks on images underneath */
+            z-index: 7; /* Set to a higher z-index to appear above photos */
+            opacity: 1; /* Always visible now */
+            transition: opacity 0.3s ease; /* Smooth transition for visibility */
+        }
+
+        /* Custom Modal Styles */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Above everything else */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .custom-modal-overlay.show .custom-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .custom-modal-content h3 {
+            font-size: 1.5rem;
+            color: #d6336c;
+            margin-bottom: 20px;
+        }
+
+        .custom-modal-content .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .custom-modal-content .modal-buttons button {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .custom-modal-content .modal-buttons .confirm-btn {
+            background-color: #ff6b81;
+            color: white;
+        }
+
+        .custom-modal-content .modal-buttons .confirm-btn:hover {
+            background-color: #e64a66;
+            transform: translateY(-1px);
+        }
+
+        .custom-modal-content .modal-buttons .cancel-btn {
+            background-color: #f0f0f0;
+            color: #884a56;
+            border: 1px solid #ccc;
+        }
+
+        .custom-modal-content .modal-buttons .cancel-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-1px);
+        }
+
+        /* Animation for heart connections */
+        .animated-heart-connection {
+            opacity: 0;
+            transform-origin: center center;
+            animation: popInHeart 0.5s ease-out forwards;
+        }
+
+        @keyframes popInHeart {
+            0% { opacity: 0; transform: scale(0.5); }
+            70% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsive adjustments */
+        /* Base styles are mobile-first, these adjust for larger screens */
+        @media (min-width: 640px) { /* Small screens (e.g., larger phones, tablets in portrait) */
+            .collage-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted min-width for better mobile fit */
+            }
+        }
+
+        @media (min-width: 768px) { /* Medium screens (e.g., tablets in landscape, small desktops) */
+            .collage-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Even larger items */
+            }
+            .header {
+                font-size: 3rem; /* Larger header */
+            }
+        }
+
+        @media (min-width: 1024px) { /* Large screens (e.g., desktops) */
+            .collage-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /*ax item size */
+            }
+            .container {
+                max-width: 1000px; /* Constrain max width for very large screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container"></div> <!-- Container for floating hearts -->
+
+    <div class="container">
+        <h1 class="header">💖 Our Beautiful Journey 💖</h1>
+        <p class="subheader">Upload your cherished memories to create a lovely collage!</p>
+
+        <!-- Music Player Section -->
+        <div class="music-player">
+            <p id="current-song-info">No music selected</p>
+            <div class="flex gap-4">
+                <div class="file-input-wrapper app-button" style="padding:12px 25px; min-width:160px; justify-content:center;">
+                    <!-- Music Icon -->
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                    </svg>
+                    <span>Choose Music</span>
+                    <input type="file" id="music-upload" accept="audio/*">
+                </div>
+                <button id="play-pause-btn" class="app-button" style="padding:12px 25px; min-width:160px; justify-content:center;">
+                    <!-- Play Icon (default) -->
+                    <svg id="play-icon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <!-- Pause Icon (hidden by default) -->
+                    <svg id="pause-icon" class="icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                    <span>Play</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Anniversary Quote Section -->
+        <div class="anniversary-quote">
+            <p>"Four years, countless smiles, and a love that grows stronger with each passing day. Happy 4th Anniversary to my amazing partner!"</p>
+            <p><strong>~ Najmul</strong></p>
+        </div>
+
+        <!-- Year-wise Gallery Sections -->
+        <div id="gallery-sections">
+            <!-- Year sections will be dynamically added here -->
+            <button id="add-year-btn" class="add-year-btn">Add New Anniversary Year</button>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+                <div class="flex items-center gap-2">
+                    <label for="thread-color">Thread Color:</label>
+                    <input type="color" id="thread-color" value="#d6336c" class="w-10 h-10 rounded-md border-2 border-pink-300 cursor-pointer">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="pin-color">Pin Color:</label>
+                    <input type="color" id="pin-color" value="#ff6b81" class="w-10 h-10 rounded-md border-2 border-pink-300 cursor-pointer">
+                </div>
+                <button id="start-linking-btn" class="add-year-btn">Start Linking Path</button>
+                <button id="finish-linking-btn" class="add-year-btn hidden">Finish Path</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Delete Confirmation Modal -->
+    <div id="delete-modal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this photo and its memory?</p>
+            <div class="modal-buttons">
+                <button id="confirm-delete-btn" class="confirm-btn">Delete</button>
+                <button id="cancel-delete-btn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="w-full text-center py-6 mt-8" style="background:rgba(255,255,255,0.7); border-radius:15px; color:#d6336c; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.07); z-index:20; position:relative;">
+        Made with 💖 for our anniversary &mdash; Najmul &amp; Mehak &copy; 2025
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const musicUpload = document.getElementById('music-upload');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            const currentSongInfo = document.getElementById('current-song-info');
+            const addYearBtn = document.getElementById('add-year-btn');
+            const gallerySections = document.getElementById('gallery-sections');
+            const heartsContainer = document.querySelector('.hearts-container');
+
+            // Custom Modal Elements
+            const deleteModal = document.getElementById('delete-modal');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            let photoToDelete = null; // To store the reference of the photo to be deleted
+
+            let audio = new Audio();
+            let isPlaying = false;
+            let currentObjectURL = null; // To keep track of the current object URL for revocation
+
+            // --- Music Player Logic ---
+            musicUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('audio/')) {
+                    // Revoke previous object URL if any
+                    if (currentObjectURL) {
+                        URL.revokeObjectURL(currentObjectURL);
+                    }
+
+                    const objectURL = URL.createObjectURL(file);
+                    audio.src = objectURL;
+                    currentObjectURL = objectURL; // Store the new object URL
+                    currentSongInfo.textContent = `Now playing: ${file.name}`;
+                    
+                    // Set audio to loop automatically
+                    audio.loop = true;
+
+                    // Stop current playback and reset button
+                    audio.pause();
+                    playPauseBtn.classList.remove('playing');
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
+                    playPauseBtn.querySelector('span').textContent = 'Play';
+                    isPlaying = false;
+
+                } else if (file) {
+                    currentSongInfo.textContent = 'Please select an audio file.';
+                    console.warn(`File ${file.name} is not an audio file.`);
+                }
+            });
+
+            playPauseBtn.addEventListener('click', () => {
+                if (!audio.src) {
+                    currentSongInfo.textContent = 'Please select music first!';
+                    return;
+                }
+                if (isPlaying) {
+                    audio.pause();
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
+                    playPauseBtn.querySelector('span').textContent = 'Play';
+                    playPauseBtn.classList.remove('playing'); // Stop pulsating
+                } else {
+                    audio.play().catch(e => console.error("Error playing audio:", e));
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                    playPauseBtn.querySelector('span').textContent = 'Pause';
+                    playPauseBtn.classList.add('playing'); // Start pulsating
+                }
+                isPlaying = !isPlaying;
+            });
+
+            audio.addEventListener('ended', () => {
+                // The audio.loop = true handles the repetition, no need to manually play again here.
+                // We only update the UI state if it was playing and now ended (though loop makes this less frequent)
+                isPlaying = false;
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                playPauseBtn.querySelector('span').textContent = 'Play';
+                playPauseBtn.classList.remove('playing'); // Stop pulsating
+                currentSongInfo.textContent = 'Music finished. Select new music.';
+                // IMPORTANT: Do NOT revokeObjectURL here if you want it to repeat without re-uploading.
+                // The object URL should remain valid for the loop to work.
+            });
+
+            // --- Year-wise Gallery Logic ---
+            let yearCounter = 0; // To ensure unique IDs for year sections
+
+            // Global map to store links for each year section
+            // Each entry will be a single path object: { path: [photoId1, photoId2, ...], threadColor: '#...', pinColor: '#...' }
+            const yearSectionPaths = new Map();
+
+            const createYearSection = (year = '') => {
+                yearCounter++;
+                const sectionId = `year-section-${yearCounter}`;
+                const collageGridId = `collage-grid-${yearCounter}`;
+                const fileInputId = `photo-upload-${yearCounter}`;
+
+                const yearSectionDiv = document.createElement('div');
+                yearSectionDiv.classList.add('year-section');
+                yearSectionDiv.id = sectionId; // Set ID here
+
+                // Initialize paths for this new section (initially null, meaning no path)
+                yearSectionPaths.set(sectionId, null);
+
+                yearSectionDiv.innerHTML = `
+                    <div class="year-header">
+                        <h2 contenteditable="true" spellcheck="false" class="focus:outline-none focus:ring-2 focus:ring-pink-300 rounded-md px-2 py-1">${year ? year : 'Anniversary Year'}</h2>
+                        <span class="toggle-icon">&#9660;</span> <!-- Down arrow -->
+                    </div>
+                    <div class="year-content">
+                        <div class="file-input-wrapper">
+                            <span>Upload Photos for this Year</span>
+                            <input type="file" id="${fileInputId}" accept="image/*" multiple>
+                        </div>
+                        <div id="${collageGridId}" class="collage-grid">
+                            <svg class="collage-connections-svg">
+                                <defs>
+                                    <!-- SVG Heart Symbol -->
+                                    <symbol id="heart-icon" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </symbol>
+
+                                    <!-- 3D Pin Symbol - NO fill here, will be set dynamically via gradient -->
+                                    <symbol id="pin-icon" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="7" r="6" class="pin-head"/>
+                                        <rect x="11" y="7" width="2" height="17" rx="1" ry="1" class="pin-body"/>
+                                    </symbol>
+                                </defs>
+                            </svg>
+                            <!-- Placeholder photos for new sections -->
+                            <div class="collage-item" style="animation-delay: 0s;" data-shape="square" data-photo-id="placeholder-1">
+                                <img src="https://placehold.co/150x105/FFDDE1/EE9CA7?text=Year%20Photo" alt="Placeholder 1">
+                                <div class="photo-memory" contenteditable="true" spellcheck="false">Add memory for this photo...</div>
+                                <div class="photo-actions">
+                                    <button class="edit-photo-btn">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                        <span>Edit</span>
+                                    </button>
+                                    <button class="delete-photo-btn">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collage-item" style="animation-delay: 0.1s;" data-shape="circle" data-photo-id="placeholder-2">
+                                <img src="https://placehold.co/150x105/FFDDE1/EE9CA7?text=Memories" alt="Placeholder 2">
+                                <div class="photo-memory" contenteditable="true" spellcheck="false">Add memory for this photo...</div>
+                                <div class="photo-actions">
+                                    <button class="edit-photo-btn">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                        <span>Edit</span>
+                                    </button>
+                                    <button class="delete-photo-btn">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                gallerySections.insertBefore(yearSectionDiv, addYearBtn);
+
+                // Add event listeners for the new section
+                const newPhotoUpload = yearSectionDiv.querySelector(`#${fileInputId}`);
+                const newCollageGrid = yearSectionDiv.querySelector(`#${collageGridId}`);
+                const yearHeader = yearSectionDiv.querySelector('.year-header');
+                const connectionsSvg = newCollageGrid.querySelector('.collage-connections-svg');
+
+
+                // Make year header editable and save on blur
+                const yearTitle = yearSectionDiv.querySelector('h2');
+                yearTitle.addEventListener('blur', () => {
+                    if (yearTitle.textContent.trim() === '') {
+                        yearTitle.textContent = 'Anniversary Year'; // Reset if empty
+                    }
+                });
+
+                // Toggle collapse/expand
+                yearHeader.addEventListener('click', () => {
+                    yearSectionDiv.classList.toggle('collapsed');
+                    // Redraw connections if expanding
+                    if (!yearSectionDiv.classList.contains('collapsed')) {
+                        // Delay drawing to allow CSS transition to complete
+                        setTimeout(() => drawCollageConnections(yearSectionDiv), 500);
+                    }
+                });
+
+                // Photo upload for this specific year section
+                newPhotoUpload.addEventListener('change', (event) => {
+                    const files = event.target.files;
+                    if (files.length === 0) return;
+
+                    // Clear existing placeholder photos in this specific grid
+                    const placeholders = newCollageGrid.querySelectorAll('.collage-item img[src*="placehold.co"]');
+                    placeholders.forEach(placeholder => {
+                        placeholder.closest('.collage-item').remove();
+                    });
+
+                    let delay = 0;
+                    const filesArray = Array.from(files); // Convert FileList to Array
+                    filesArray.forEach((file, index) => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                addPhotoToCollage(newCollageGrid, e.target.result, delay);
+                                delay += 0.1;
+                                // Redraw connections after all images for this batch are loaded
+                                if (index === filesArray.length - 1) {
+                                    setTimeout(() => drawCollageConnections(yearSectionDiv), 500); // Small delay for animation
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        } else {
+                            console.warn(`File ${file.name} is not an image and will be skipped.`);
+                        }
+                    });
+                });
+
+                // Attach event listeners to initial placeholder buttons
+                yearSectionDiv.querySelectorAll('.collage-item').forEach(item => {
+                    const enhanceMemoryBtn = item.querySelector('.enhance-memory-btn');
+                    attachPhotoActionListeners(item, yearSectionDiv, enhanceMemoryBtn);
+                });
+
+                // Initial draw for placeholders
+                setTimeout(() => drawCollageConnections(yearSectionDiv), 500); // Small delay for initial layout
+            };
+
+            // Function to add a photo to a specific collage grid
+            const addPhotoToCollage = (targetGrid, src, delay) => {
+                const collageItem = document.createElement('div');
+                collageItem.classList.add('collage-item');
+                collageItem.style.animationDelay = `${delay}s`;
+
+                // Assign a unique ID to each photo item
+                collageItem.dataset.photoId = `photo-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+                // Randomly assign shape
+                const shapes = ['square', 'circle', 'pentagon', 'hexagon'];
+                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                collageItem.setAttribute('data-shape', randomShape);
+
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = 'Anniversary Photo';
+
+                img.onerror = () => {
+                    img.src = 'https://placehold.co/150x105/FFDDE1/EE9CA7?text=Error'; // Fallback placeholder
+                    console.error('Failed to load image:', src);
+                };
+
+                const photoMemory = document.createElement('div');
+                photoMemory.classList.add('photo-memory');
+                photoMemory.contentEditable = true;
+                photoMemory.spellcheck = false;
+                photoMemory.textContent = 'Add memory for this photo...';
+
+                const photoActions = document.createElement('div');
+                photoActions.classList.add('photo-actions');
+                photoActions.innerHTML = `
+                    <button class="edit-photo-btn">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        <span>Edit</span>
+                    </button>
+                    <button class="delete-photo-btn">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        <span>Delete</span>
+                    </button>
+                    <button class="enhance-memory-btn">✨ Enhance Memory</button>
+                `;
+
+                collageItem.appendChild(img);
+                collageItem.appendChild(photoMemory);
+                collageItem.appendChild(photoActions); // Add actions div
+
+                // Insert the new photo before the SVG element
+                const svgElement = targetGrid.querySelector('.collage-connections-svg');
+                targetGrid.insertBefore(collageItem, svgElement);
+
+                // Attach event listeners for the newly added photo's buttons
+                // Pass enhanceMemoryBtn explicitly if it's created dynamically
+                const enhanceMemoryBtn = photoActions.querySelector('.enhance-memory-btn');
+                attachPhotoActionListeners(collageItem, targetGrid.closest('.year-section'), enhanceMemoryBtn);
+            };
+
+            // New linking mode variables
+            const LinkingModeState = {
+                IDLE: 'idle',
+                SELECTING_START: 'selecting_start',
+                SELECTING_PATH: 'selecting_path'
+            };
+            let linkingMode = LinkingModeState.IDLE;
+            let currentPathPhotos = []; // Array of photo IDs for the current path being built
+            let currentYearSectionForLinking = null; // To know which year section we're linking in
+            let currentThreadColor = '#d6336c'; // Default thread color
+            let currentPinColor = '#ff6b81';     // Default pin color
+
+            const startLinkingBtn = document.getElementById('start-linking-btn');
+            const finishLinkingBtn = document.getElementById('finish-linking-btn');
+            const threadColorInput = document.getElementById('thread-color');
+            const pinColorInput = document.getElementById('pin-color');
+
+            // Function to attach event listeners to edit/delete buttons AND handle linking clicks
+            const attachPhotoActionListeners = (collageItem, yearSectionDiv, enhanceMemoryBtn) => {
+                const editBtn = collageItem.querySelector('.edit-photo-btn');
+                const deleteBtn = collageItem.querySelector('.delete-photo-btn');
+                const photoMemory = collageItem.querySelector('.photo-memory');
+
+                editBtn.addEventListener('click', () => {
+                    if (photoMemory.contentEditable === 'true') {
+                        // Currently in edit mode, so save
+                        photoMemory.contentEditable = 'false';
+                        editBtn.querySelector('span').textContent = 'Edit';
+                        editBtn.querySelector('svg').innerHTML = '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>'; // Edit icon
+                        photoMemory.style.boxShadow = ''; // Remove highlight
+                    } else {
+                        // Enter edit mode
+                        photoMemory.contentEditable = 'true';
+                        photoMemory.focus();
+                        editBtn.querySelector('span').textContent = 'Save';
+                        editBtn.querySelector('svg').innerHTML = '<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>'; // Save/Check icon
+                        photoMemory.style.boxShadow = 'inset 0 0 0 2px #ff6b81'; // Highlight
+                    }
+                });
+
+                deleteBtn.addEventListener('click', () => {
+                    // Store the photo item and its parent year section for deletion
+                    photoToDelete = { item: collageItem, yearSection: yearSectionDiv };
+                    deleteModal.classList.add('show'); // Show the custom modal
+                });
+
+                // --- Gemini API Integration: Enhance Memory ---
+                if (enhanceMemoryBtn) { // Ensure enhanceMemoryBtn exists
+                    enhanceMemoryBtn.addEventListener('click', async () => {
+                        const originalMemory = photoMemory.textContent.trim();
+                        if (!originalMemory || originalMemory === 'Add memory for this photo...') {
+                            showCustomAlert('Enhancement Tip', 'Please add some text to the memory field before enhancing!');
+                            return;
+                        }
+
+                        photoMemory.textContent = 'Enhancing memory...'; // Loading indicator
+                        photoMemory.style.color = '#884a56'; // Keep color consistent
+                        photoMemory.style.fontStyle = 'italic'; // Keep italic consistent
+                        enhanceMemoryBtn.disabled = true; // Disable button during processing
+
+                        try {
+                            let chatHistory = [];
+                            const prompt = `Enhance the following memory, making it more descriptive, emotional, or poetic. Keep it concise, around 2-3 sentences. Do not add any conversational filler.
+                            Memory: "${originalMemory}"`;
+                            
+                            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                            const payload = { contents: chatHistory };
+                            const apiKey = ""; // If you want to use models other than gemini-2.0-flash, provide an API key here. Otherwise, leave this as-is.
+                            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                            
+                            const response = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            
+                            const result = await response.json();
+                            
+                            if (result.candidates && result.candidates.length > 0 &&
+                                result.candidates[0].content && result.candidates[0].content.parts &&
+                                result.candidates[0].content.parts.length > 0) {
+                                const enhancedText = result.candidates[0].content.parts[0].text;
+                                photoMemory.textContent = enhancedText;
+                            } else {
+                                photoMemory.textContent = originalMemory + " (Enhancement failed. Please try again.)";
+                                console.error("Gemini API response structure unexpected:", result);
+                            }
+
+                        } catch (error) {
+                            photoMemory.textContent = originalMemory + " (Error enhancing memory. Network issue?)";
+                            console.error("Error calling Gemini API:", error);
+                        } finally {
+                            enhanceMemoryBtn.disabled = false; // Re-enable button
+                            photoMemory.style.color = '#884a56'; // Ensure color is reset
+                            photoMemory.style.fontStyle = 'normal'; // Ensure italic is reset if needed
+                        }
+                    });
+                }
+
+
+                // Add click listener for linking
+                collageItem.addEventListener('click', (event) => {
+                    if (linkingMode === LinkingModeState.SELECTING_PATH) {
+                        event.stopPropagation(); // Prevent body click from triggering
+
+                        const clickedPhotoId = collageItem.dataset.photoId;
+
+                        // Ensure linking within the same year section
+                        if (currentYearSectionForLinking === null) { // First photo in path
+                            currentYearSectionForLinking = yearSectionDiv.id;
+                        } else if (currentYearSectionForLinking !== yearSectionDiv.id) {
+                            showCustomAlert('Linking Error', 'Please link photos within the same anniversary year section.');
+                            resetLinkingMode();
+                            return;
+                        }
+
+                        // Prevent adding the same photo consecutively
+                        if (currentPathPhotos.length > 0 && currentPathPhotos[currentPathPhotos.length - 1] === clickedPhotoId) {
+                            showCustomAlert('Linking Error', 'Cannot link a photo to itself consecutively.');
+                            return; // Don't reset mode, allow selecting another photo
+                        }
+
+                        // Add photo to current path
+                        currentPathPhotos.push(clickedPhotoId);
+                        collageItem.classList.add('linking-selected'); // Highlight selected photo
+
+                        // Redraw connections to show the partial path
+                        drawCollageConnections(yearSectionDiv);
+                        startLinkingBtn.textContent = 'Click Photos to Add to Path'; // Update text
+                    }
+                });
+            };
+
+            // Helper function to show custom alert
+            const showCustomAlert = (title, message) => {
+                const customAlert = document.createElement('div');
+                customAlert.className = 'custom-modal-overlay show';
+                customAlert.innerHTML = `
+                    <div class="custom-modal-content">
+                        <h3>${title}</h3>
+                        <p>${message}</p>
+                        <div class="modal-buttons">
+                            <button class="cancel-btn">OK</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(customAlert);
+                customAlert.querySelector('.cancel-btn').addEventListener('click', () => {
+                    customAlert.remove();
+                });
+            };
+
+            // Reset linking mode state and UI
+            const resetLinkingMode = () => {
+                linkingMode = LinkingModeState.IDLE;
+                currentPathPhotos = [];
+                currentYearSectionForLinking = null;
+                startLinkingBtn.textContent = 'Start Linking Path';
+                startLinkingBtn.classList.remove('bg-purple-500', 'text-white');
+                finishLinkingBtn.classList.add('hidden');
+                document.body.classList.remove('linking-cursor');
+                document.querySelectorAll('.collage-item').forEach(item => {
+                    item.classList.remove('linking-target');
+                    item.classList.remove('linking-selected');
+                });
+                // Redraw all connections to clear temporary path preview
+                document.querySelectorAll('.year-section').forEach(section => {
+                    drawCollageConnections(section);
+                });
+            };
+
+            // --- Custom Modal Button Listeners ---
+            confirmDeleteBtn.addEventListener('click', () => {
+                if (photoToDelete) {
+                    const { item, yearSection } = photoToDelete; // Destructure to get references
+                    const photoIdToDelete = item.dataset.photoId; // Get the ID of the photo being deleted
+                    let currentPath = yearSectionPaths.get(yearSection.id); // Get the single path
+
+                    // If the deleted photo is part of the current path, clear the path
+                    if (currentPath && currentPath.path.includes(photoIdToDelete)) {
+                        yearSectionPaths.set(yearSection.id, null); // Clear the path
+                    }
+
+                    item.remove();
+                    // Redraw connections after deletion
+                    setTimeout(() => drawCollageConnections(yearSection), 100); // Pass the captured yearSection
+                    photoToDelete = null; // Clear reference
+                }
+                deleteModal.classList.remove('show'); // Hide the modal
+            });
+
+            cancelDeleteBtn.addEventListener('click', () => {
+                photoToDelete = null; // Clear reference
+                deleteModal.classList.remove('show'); // Hide the modal
+            });
+
+
+            // Function to draw lines and pins for ALL paths in a year section
+            const drawCollageConnections = (yearSectionDiv) => {
+                const collageGrid = yearSectionDiv.querySelector('.collage-grid');
+                const svg = collageGrid.querySelector('.collage-connections-svg');
+                const defs = svg.querySelector('defs'); // Get the defs element
+
+                // Clear ONLY the lines, hearts, and dynamically created gradients, leave defs intact
+                const nodesToRemove = Array.from(svg.children).filter(node => node.tagName.toLowerCase() !== 'defs');
+                nodesToRemove.forEach(node => node.remove());
+
+                let pathObjToDraw = yearSectionPaths.get(yearSectionDiv.id); // Get the single path
+
+                // If currently building a path in this section, use it as preview
+                if (linkingMode === LinkingModeState.SELECTING_PATH && currentYearSectionForLinking === yearSectionDiv.id && currentPathPhotos.length > 0) {
+                    pathObjToDraw = {
+                        path: currentPathPhotos,
+                        threadColor: currentThreadColor,
+                        pinColor: currentPinColor,
+                        isPreview: true // Mark as preview path
+                    };
+                }
+
+                if (pathObjToDraw && pathObjToDraw.path.length > 0) {
+                    const path = pathObjToDraw.path;
+                    const threadColor = pathObjToDraw.threadColor;
+                    const pinColor = pathObjToDraw.pinColor;
+
+                    // Draw segments and hearts
+                    for (let i = 0; i < path.length - 1; i++) {
+                        const fromPhoto = collageGrid.querySelector(`[data-photo-id="${path[i]}"]`);
+                        const toPhoto = collageGrid.querySelector(`[data-photo-id="${path[i+1]}"]`);
+
+                        if (fromPhoto && toPhoto) {
+                            const p1Rect = fromPhoto.getBoundingClientRect();
+                            const p2Rect = toPhoto.getBoundingClientRect();
+
+                            const p1 = {
+                                x: (p1Rect.left + p1Rect.right) / 2 - collageGrid.getBoundingClientRect().left,
+                                y: (p1Rect.top + p1Rect.bottom) / 2 - collageGrid.getBoundingClientRect().top
+                            };
+                            const p2 = {
+                                x: (p2Rect.left + p2Rect.right) / 2 - collageGrid.getBoundingClientRect().left,
+                                y: (p2Rect.top + p2Rect.bottom) / 2 - collageGrid.getBoundingClientRect().top
+                            };
+
+                            // Draw the connection segment
+                            drawSingleConnection(svg, p1, p2, threadColor); // Pass only threadColor
+                        }
+                    }
+
+                    // Draw pins at EACH photo in the path (only if it's a finalized path or the current preview path)
+                    path.forEach(photoId => {
+                        const photoElement = collageGrid.querySelector(`[data-photo-id="${photoId}"]`);
+                        if (photoElement) {
+                            const photoRect = photoElement.getBoundingClientRect();
+                            const photoCenter = {
+                                x: (photoRect.left + photoRect.right) / 2 - collageGrid.getBoundingClientRect().left,
+                                y: (photoRect.top + photoRect.bottom) / 2 - collageGrid.getBoundingClientRect().top
+                            };
+                            drawPinAtPoint(svg, photoCenter, pinColor, pathObjToDraw.isPreview, defs); // Pass defs for gradient creation
+                        }
+                    });
+                }
+            };
+
+            // Helper function to draw a single connection (line + heart)
+            const drawSingleConnection = (svg, p1, p2, threadColor) => { // Removed pinColor from here
+                let midX = (p1.x + p2.x) / 2;
+                let midY = (p1.y + p2.y) / 2;
+
+                // Calculate distance to determine appropriate offset magnitude
+                const distance = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                const maxOffset = Math.min(distance * 0.2, 30); // Max 20% of distance, or 30px, whichever is smaller
+
+                // Add random offset to midpoint for dynamic path
+                midX += (Math.random() - 0.5) * 2 * maxOffset; // Random value between -maxOffset and +maxOffset
+                midY += (Math.random() - 0.5) * 2 * maxOffset;
+
+                // Line from p1 to midpoint
+                const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line1.setAttribute('x1', p1.x);
+                line1.setAttribute('y1', p1.y);
+                line1.setAttribute('x2', midX);
+                line1.setAttribute('y2', midY);
+                line1.setAttribute('stroke', threadColor);
+                line1.setAttribute('stroke-width', '4'); /* Increased thickness */
+                line1.setAttribute('stroke-dasharray', '5,5');
+                svg.appendChild(line1);
+
+                // Line from midpoint to p2
+                const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line2.setAttribute('x1', midX);
+                line2.setAttribute('y1', midY);
+                line2.setAttribute('x2', p2.x);
+                line2.setAttribute('y2', p2.y);
+                line2.setAttribute('stroke', threadColor);
+                line2.setAttribute('stroke-width', '4'); /* Increased thickness */
+                line2.setAttribute('stroke-dasharray', '5,5');
+                svg.appendChild(line2);
+
+                // Add heart at midpoint
+                const heartUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+                heartUse.setAttribute('href', '#heart-icon');
+                const heartSize = 24; // Desired display size in pixels
+                heartUse.setAttribute('width', heartSize);
+                heartUse.setAttribute('height', heartSize);
+                // Adjust x, y to center the heart
+                heartUse.setAttribute('x', midX - heartSize / 2);
+                heartUse.setAttribute('y', midY - heartSize / 2);
+                heartUse.setAttribute('fill', '#FF0000'); // Fixed red color for heart
+                heartUse.classList.add('animated-heart-connection'); // For animation
+                svg.appendChild(heartUse);
+            };
+
+            // Helper function to draw a pin at a given point
+            const drawPinAtPoint = (svg, point, pinColor, isPreview = false, defs) => {
+                // Create unique gradient ID for this pin
+                const gradientId = `pinGradient-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+                // Create the radial gradient definition
+                const radialGradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+                radialGradient.setAttribute('id', gradientId);
+                radialGradient.setAttribute('cx', '50%');
+                radialGradient.setAttribute('cy', '50%');
+                radialGradient.setAttribute('r', '50%');
+                radialGradient.setAttribute('fx', '60%');
+                radialGradient.setAttribute('fy', '40%');
+
+                const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                stop1.setAttribute('offset', '0%');
+                stop1.setAttribute('stop-color', pinColor); // Use the chosen pinColor
+                radialGradient.appendChild(stop1);
+
+                const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                stop2.setAttribute('offset', '100%');
+                // Calculate a darker shade for the 3D effect
+                const darkerPinColor = darkenColor(pinColor, 20); // Darken by 20%
+                stop2.setAttribute('stop-color', darkerPinColor);
+                radialGradient.appendChild(stop2);
+
+                defs.appendChild(radialGradient); // Add gradient to defs
+
+                const pinUse = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+                pinUse.setAttribute('href', '#pin-icon');
+                const pinSize = 24; // Size of the pin icon
+                pinUse.setAttribute('width', pinSize);
+                pinUse.setAttribute('height', pinSize);
+                // Position the pin, adjusting for its own viewBox and size to center it
+                pinUse.setAttribute('x', point.x - pinSize / 2);
+                pinUse.setAttribute('y', point.y - pinSize / 2);
+                // Explicitly set fill to the gradient URL
+                pinUse.setAttribute('fill', `url(#${gradientId})`);
+                if (isPreview) {
+                    pinUse.style.opacity = 0.5; // Make preview pins semi-transparent
+                }
+                svg.appendChild(pinUse);
+            };
+
+            // Helper function to darken a hex color
+            function darkenColor(hex, percent) {
+                const f = parseInt(hex.slice(1), 16);
+                const t = percent < 0 ? 0 : 255;
+                const p = percent / 100;
+                const R = f >> 16;
+                const G = (f >> 8) & 0x00ff;
+                const B = f & 0x0000ff;
+                const newR = Math.round((t - R) * p + R);
+                const newG = Math.round((t - G) * p + G);
+                const newB = Math.round((t - B) * p + B);
+                return "#" + (0x1000000 + newR * 0x10000 + newG * 0x100 + newB).toString(16).slice(1);
+            }
+
+
+            // --- Linking UI Button Logic ---
+            startLinkingBtn.addEventListener('click', () => {
+                if (linkingMode === LinkingModeState.IDLE) {
+                    linkingMode = LinkingModeState.SELECTING_PATH;
+                    currentPathPhotos = [];
+                    currentYearSectionForLinking = null; // Will be set on first photo click
+                    currentThreadColor = threadColorInput.value;
+                    currentPinColor = pinColorInput.value;
+
+                    startLinkingBtn.textContent = 'Click Photos to Add to Path';
+                    startLinkingBtn.classList.add('bg-purple-500', 'text-white');
+                    finishLinkingBtn.classList.remove('hidden');
+                    document.body.classList.add('linking-cursor');
+
+                    // Add visual cue to all current collage items that they are clickable
+                    document.querySelectorAll('.collage-item').forEach(item => {
+                        item.classList.add('linking-target');
+                    });
+                } else {
+                    // If already in linking mode, reset it
+                    resetLinkingMode();
+                }
+            });
+
+            finishLinkingBtn.addEventListener('click', () => {
+                if (currentPathPhotos.length >= 2) {
+                    // Get the year section element
+                    const yearSectionElement = document.getElementById(currentYearSectionForLinking);
+                    if (yearSectionElement) {
+                        // Store the new path, overwriting any previous one for this year
+                        yearSectionPaths.set(currentYearSectionForLinking, {
+                            path: [...currentPathPhotos], // Clone the array
+                            threadColor: currentThreadColor,
+                            pinColor: currentPinColor
+                        });
+                        drawCollageConnections(yearSectionElement); // Redraw to show finalized path
+                    }
+                } else {
+                    showCustomAlert('Path Too Short', 'Please select at least two photos to form a path.');
+                }
+                resetLinkingMode(); // Always reset after finishing or if path is too short
+            });
+
+
+            // Add initial year section (e.g., for the current 4th anniversary)
+            createYearSection('Year 4');
+
+            addYearBtn.addEventListener('click', () => {
+                createYearSection(); // Create a new section without a predefined year
+            });
+
+            // Redraw connections on window resize for all year sections
+            window.addEventListener('resize', () => {
+                document.querySelectorAll('.year-section').forEach(section => {
+                    // Only redraw if not collapsed, or if you want lines to appear on collapse too
+                    if (!section.classList.contains('collapsed')) {
+                        drawCollageConnections(section);
+                    }
+                });
+            });
+
+
+            // --- Background Heart Animation Logic ---
+            // Function to create and animate a single heart at a specific position
+            const createHeart = (startX, startY, delay) => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+
+                // Randomize size for variety
+                const size = Math.random() * 20 + 20; // Size between 20px and 40px
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+
+                // Position the heart at the click coordinates, centered
+                heart.style.left = `${startX - size / 2}px`;
+                heart.style.top = `${startY - size / 2}px`;
+
+                // Randomize animation duration and delay for a natural burst effect
+                heart.style.animationDuration = `${Math.random() * 2 + 2}s`; // Duration between 2s and 4s
+                heart.style.animationDelay = `${delay}s`;
+                
+                // Randomize initial rotation for variety
+                heart.style.transform = `rotate(${Math.random() * 90 - 45}deg)`; // -45 to 45 degrees initial rotation
+
+                heartsContainer.appendChild(heart);
+
+                // Remove heart after animation to prevent DOM bloat
+                heart.addEventListener('animationend', () => {
+                    heart.remove();
+                });
+            };
+
+            // Function to trigger a burst of hearts
+            const triggerHeartBurst = (x, y) => {
+                const numHearts = Math.floor(Math.random() * 5) + 5; // 5 to 9 hearts per burst
+                for (let i = 0; i < numHearts; i++) {
+                    const delay = i * 0.05; // Small delay between each heart in the burst
+                    createHeart(x, y, delay);
+                }
+            };
+
+            // Add event listener to the body for clicks/touches
+            document.body.addEventListener('click', (event) => {
+                // Only trigger heart burst if not in linking mode and not clicking on a control
+                if (linkingMode === LinkingModeState.IDLE && !event.target.closest('.container')) {
+                    triggerHeartBurst(event.clientX, event.clientY);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+</body>
+</html>
